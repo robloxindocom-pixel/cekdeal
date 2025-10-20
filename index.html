@@ -30,6 +30,10 @@
       padding: 10px 15px;
       border-radius: 5px;
       cursor: pointer;
+      transition: 0.2s;
+    }
+    button:hover:not(:disabled) {
+      background: #0056b3;
     }
     button:disabled {
       opacity: 0.6;
@@ -39,8 +43,21 @@
       margin-top: 15px;
       word-wrap: break-word;
     }
+    #preview img {
+      margin-top: 10px;
+      max-width: 100%;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+    }
+    #copyBtn {
+      margin-top: 8px;
+      background: #28a745;
+    }
+    #copyBtn:hover {
+      background: #218838;
+    }
     a {
-      color: #28a745;
+      color: #007bff;
       text-decoration: none;
     }
   </style>
@@ -54,6 +71,7 @@
     <button id="uploadBtn">Upload ke GitHub</button>
 
     <div id="output"></div>
+    <div id="preview"></div>
   </div>
 
   <script src="js/upload.js"></script>
