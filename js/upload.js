@@ -1,11 +1,12 @@
-const GITHUB_TOKEN = "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"; // token kamu
-const USERNAME = "robloxindocom"; // username GitHub kamu
-const REPO = "cekdeal"; // nama repo
-const BRANCH = "main"; // biasanya 'main' atau 'master'
+const GITHUB_TOKEN = "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";
+const USERNAME = "robloxindocom";
+const REPO = "cekdeal";
+const BRANCH = "main";
 
 document.getElementById('uploadBtn').addEventListener('click', async () => {
   const fileInput = document.getElementById('fileInput');
   const output = document.getElementById('output');
+  const preview = document.getElementById('preview');
 
   if (!fileInput.files.length) {
     return alert("Pilih gambar terlebih dahulu!");
@@ -19,6 +20,7 @@ document.getElementById('uploadBtn').addEventListener('click', async () => {
     const filePath = `images/${Date.now()}_${file.name}`;
 
     output.innerHTML = "⏳ Mengunggah ke GitHub...";
+    preview.innerHTML = "";
     document.getElementById('uploadBtn').disabled = true;
 
     try {
@@ -39,11 +41,23 @@ document.getElementById('uploadBtn').addEventListener('click', async () => {
 
       if (response.ok) {
         const rawUrl = `https://raw.githubusercontent.com/${USERNAME}/${REPO}/${BRANCH}/${filePath}`;
+
         output.innerHTML = `
-          ✅ Upload berhasil!<br>
+          ✅ <b>Upload berhasil!</b><br>
           📎 <b>Link Gambar:</b><br>
-          <a href="${rawUrl}" target="_blank">${rawUrl}</a>
+          <a id="imageLink" href="${rawUrl}" target="_blank">${rawUrl}</a><br>
+          <button id="copyBtn">📋 Salin Link</button>
         `;
+
+        preview.innerHTML = `<img src="${rawUrl}" alt="Preview Gambar">`;
+
+        document.getElementById('copyBtn').addEventListener('click', () => {
+          navigator.clipboard.writeText(rawUrl);
+          const btn = document.getElementById('copyBtn');
+          btn.textContent = "✅ Disalin!";
+          setTimeout(() => (btn.textContent = "📋 Salin Link"), 2000);
+        });
+
       } else {
         output.innerHTML = `❌ Gagal upload: ${result.message || 'Unknown error'}`;
       }
