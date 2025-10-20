@@ -1,7 +1,13 @@
-document.getElementById('uploadBtn').addEventListener('click', async () => {
-  const fileInput = document.getElementById('fileInput');
-  const output = document.getElementById('output');
-  const preview = document.getElementById('preview');
+// === Konfigurasi ===
+const GITHUB_TOKEN = "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"; // PAT dgn izin "repo"
+const USERNAME = "robloxindocom";
+const REPO = "cekdeal";
+const BRANCH = "main";
+
+document.getElementById("uploadBtn").addEventListener("click", async () => {
+  const fileInput = document.getElementById("fileInput");
+  const output = document.getElementById("output");
+  const preview = document.getElementById("preview");
 
   if (!fileInput.files.length) return alert("Pilih gambar terlebih dahulu!");
 
@@ -9,44 +15,53 @@ document.getElementById('uploadBtn').addEventListener('click', async () => {
   const reader = new FileReader();
 
   reader.onloadend = async () => {
-    const base64data = reader.result.split(',')[1];
-    const filename = `${Date.now()}_${file.name}`;
+    const base64data = reader.result.split(",")[1];
+
+    // === Nama file otomatis ===
+    const username = "user123"; // nanti bisa diganti sesuai login
+    const tanggal = new Date().toISOString().replace(/[:.]/g, "-");
+    const filename = `${username}_${tanggal}_${file.name}`;
 
     output.innerHTML = "⏳ Mengunggah...";
     preview.innerHTML = "";
-    document.getElementById('uploadBtn').disabled = true;
 
     try {
-      const res = await fetch("/api/upload", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ filename, content: base64data })
+      const res = await fetch(`https://api.github.com/repos/${USERNAME}/${REPO}/contents/images/${filename}`, {
+        method: "PUT",
+        headers: {
+          "Authorization": `token ${GITHUB_TOKEN}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          message: `Upload ${filename}`,
+          content: base64data,
+          branch: BRANCH,
+        }),
       });
 
       const data = await res.json();
+
       if (res.ok) {
-        const link = data.url;
+        const link = `https://raw.githubusercontent.com/${USERNAME}/${REPO}/${BRANCH}/images/${filename}`;
         output.innerHTML = `
           ✅ <b>Upload berhasil!</b><br>
-          📎 <a id="imageLink" href="${link}" target="_blank">${link}</a><br>
+          <a href="${link}" target="_blank">${link}</a><br>
           <button id="copyBtn">📋 Salin Link</button>
         `;
-        preview.innerHTML = `<img src="${link}" alt="Preview Gambar">`;
+        preview.innerHTML = `<img src="${link}" alt="Preview">`;
 
-        document.getElementById('copyBtn').addEventListener('click', () => {
+        document.getElementById("copyBtn").addEventListener("click", () => {
           navigator.clipboard.writeText(link);
-          const btn = document.getElementById('copyBtn');
+          const btn = document.getElementById("copyBtn");
           btn.textContent = "✅ Disalin!";
           setTimeout(() => (btn.textContent = "📋 Salin Link"), 2000);
         });
       } else {
-        output.innerHTML = `❌ Gagal upload: ${data.error}`;
+        output.innerHTML = `❌ Gagal upload: ${data.message}`;
       }
     } catch (err) {
-      output.innerHTML = `⚠️ Terjadi kesalahan: ${err.message}`;
+      output.innerHTML = `⚠️ Kesalahan: ${err.message}`;
     }
-
-    document.getElementById('uploadBtn').disabled = false;
   };
 
   reader.readAsDataURL(file);
