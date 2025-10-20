@@ -21,7 +21,7 @@
   <div id="linkContainer"></div>
 
   <script>
-    const GITHUB_TOKEN = "YOUR_GITHUB_TOKEN"; // ⚠️ Ganti token kamu
+    const GITHUB_TOKEN = "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"; // ⚠️ Ganti token kamu
     const USERNAME = "robloxindocom";         // ⚠️ Ganti username GitHub kamu
     const REPO = "cekdeal";                   // ⚠️ Ganti nama repo kamu
     const BRANCH = "main";                    // atau 'master' tergantung repo kamu
