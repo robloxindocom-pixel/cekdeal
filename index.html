@@ -5,61 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Upload Bukti Pembayaran ke GitHub</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 2rem;
-      background: #f7f7f7;
-      color: #333;
-    }
+    body { font-family: Arial, sans-serif; padding: 2rem; background: #f7f7f7; color: #333; }
     h1 { color: #007bff; }
-    .card {
-      background: white;
-      padding: 1.5rem;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      max-width: 500px;
-      margin: auto;
-    }
-    input[type=file] {
-      margin: 10px 0;
-    }
-    button {
-      background: #007bff;
-      color: white;
-      border: none;
-      padding: 10px 15px;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-    button:hover:not(:disabled) {
-      background: #0056b3;
-    }
-    button:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-    #output {
-      margin-top: 15px;
-      word-wrap: break-word;
-    }
-    #preview img {
-      margin-top: 10px;
-      max-width: 100%;
-      border-radius: 10px;
-      border: 1px solid #ddd;
-    }
-    #copyBtn {
-      margin-top: 8px;
-      background: #28a745;
-    }
-    #copyBtn:hover {
-      background: #218838;
-    }
-    a {
-      color: #007bff;
-      text-decoration: none;
-    }
+    .card { background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); max-width: 500px; margin: auto; }
+    input[type=file] { margin: 10px 0; }
+    button { background: #007bff; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; transition: 0.2s; }
+    button:hover:not(:disabled) { background: #0056b3; }
+    button:disabled { opacity: 0.6; cursor: not-allowed; }
+    #output { margin-top: 15px; word-wrap: break-word; }
+    #preview img { margin-top: 10px; max-width: 100%; border-radius: 10px; border: 1px solid #ddd; }
+    #copyBtn { margin-top: 8px; background: #28a745; }
+    #copyBtn:hover { background: #218838; }
+    a { color: #007bff; text-decoration: none; }
   </style>
 </head>
 <body>
