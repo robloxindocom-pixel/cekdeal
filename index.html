@@ -56,61 +56,6 @@
     <div id="output"></div>
   </div>
 
-  <script>
-    const GITHUB_TOKEN = "ISI_DENGAN_PERSONAL_ACCESS_TOKEN";
-    const USERNAME = "ISI_DENGAN_USERNAME_GITHUB";
-    const REPO = "marketin-files"; // ganti sesuai nama repo kamu
-    const BRANCH = "main"; // bisa juga 'master' jika itu default
-
-    document.getElementById('uploadBtn').addEventListener('click', async () => {
-      const fileInput = document.getElementById('fileInput');
-      const output = document.getElementById('output');
-
-      if (!fileInput.files.length) {
-        return alert("Pilih gambar terlebih dahulu!");
-      }
-
-      const file = fileInput.files[0];
-      const reader = new FileReader();
-
-      reader.onloadend = async () => {
-        const base64data = reader.result.split(',')[1];
-        const filePath = `images/${Date.now()}_${file.name}`;
-
-        output.innerHTML = "⏳ Mengunggah ke GitHub...";
-        document.getElementById('uploadBtn').disabled = true;
-
-        const response = await fetch(`https://api.github.com/repos/${USERNAME}/${REPO}/contents/${filePath}`, {
-          method: 'PUT',
-          headers: {
-            'Authorization': `token ${GITHUB_TOKEN}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            message: `Upload ${file.name}`,
-            content: base64data,
-            branch: BRANCH,
-          })
-        });
-
-        const result = await response.json();
-
-        if (response.ok) {
-          const rawUrl = `https://raw.githubusercontent.com/${USERNAME}/${REPO}/${BRANCH}/${filePath}`;
-          output.innerHTML = `
-            ✅ Upload berhasil!<br>
-            📎 <b>Link Gambar:</b><br>
-            <a href="${rawUrl}" target="_blank">${rawUrl}</a>
-          `;
-        } else {
-          output.innerHTML = `❌ Gagal upload: ${result.message || 'Unknown error'}`;
-        }
-
-        document.getElementById('uploadBtn').disabled = false;
-      };
-
-      reader.readAsDataURL(file);
-    });
-  </script>
+  <script src="js/upload.js"></script>
 </body>
 </html>
