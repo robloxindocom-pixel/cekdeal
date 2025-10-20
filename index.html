@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload Bukti Pembayaran ke GitHub</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 2rem;
+      background: #f7f7f7;
+      color: #333;
+    }
+    h1 { color: #007bff; }
+    .card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      max-width: 500px;
+      margin: auto;
+    }
+    input[type=file] {
+      margin: 10px 0;
+    }
+    button {
+      background: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    #output {
+      margin-top: 15px;
+      word-wrap: break-word;
+    }
+    a {
+      color: #28a745;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Upload Bukti Pembayaran</h1>
+    <p>Pilih gambar bukti pembayaran untuk diunggah ke repo GitHub.</p>
+
+    <input type="file" id="fileInput" accept="image/*"><br>
+    <button id="uploadBtn">Upload ke GitHub</button>
+
+    <div id="output"></div>
+  </div>
+
+  <script>
+    const GITHUB_TOKEN = "ISI_DENGAN_PERSONAL_ACCESS_TOKEN";
+    const USERNAME = "ISI_DENGAN_USERNAME_GITHUB";
+    const REPO = "marketin-files"; // ganti sesuai nama repo kamu
+    const BRANCH = "main"; // bisa juga 'master' jika itu default
+
+    document.getElementById('uploadBtn').addEventListener('click', async () => {
+      const fileInput = document.getElementById('fileInput');
+      const output = document.getElementById('output');
+
+      if (!fileInput.files.length) {
+        return alert("Pilih gambar terlebih dahulu!");
+      }
+
+      const file = fileInput.files[0];
+      const reader = new FileReader();
+
+      reader.onloadend = async () => {
+        const base64data = reader.result.split(',')[1];
+        const filePath = `images/${Date.now()}_${file.name}`;
+
+        output.innerHTML = "⏳ Mengunggah ke GitHub...";
+        document.getElementById('uploadBtn').disabled = true;
+
+        const response = await fetch(`https://api.github.com/repos/${USERNAME}/${REPO}/contents/${filePath}`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `token ${GITHUB_TOKEN}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            message: `Upload ${file.name}`,
+            content: base64data,
+            branch: BRANCH,
+          })
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          const rawUrl = `https://raw.githubusercontent.com/${USERNAME}/${REPO}/${BRANCH}/${filePath}`;
+          output.innerHTML = `
+            ✅ Upload berhasil!<br>
+            📎 <b>Link Gambar:</b><br>
+            <a href="${rawUrl}" target="_blank">${rawUrl}</a>
+          `;
+        } else {
+          output.innerHTML = `❌ Gagal upload: ${result.message || 'Unknown error'}`;
+        }
+
+        document.getElementById('uploadBtn').disabled = false;
+      };
+
+      reader.readAsDataURL(file);
+    });
+  </script>
+</body>
+</html>
