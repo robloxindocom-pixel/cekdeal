@@ -3,30 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Upload Bukti Pembayaran ke GitHub</title>
+  <title>Upload Gambar ke GitHub</title>
   <style>
-    body { font-family: Arial, sans-serif; padding: 2rem; background: #f7f7f7; color: #333; }
-    h1 { color: #007bff; }
-    .card { background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); max-width: 500px; margin: auto; }
-    input[type=file] { margin: 10px 0; }
-    button { background: #007bff; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; transition: 0.2s; }
-    button:hover:not(:disabled) { background: #0056b3; }
-    button:disabled { opacity: 0.6; cursor: not-allowed; }
+    body { font-family: Arial; background: #f8f9fa; padding: 2rem; text-align: center; }
+    .card { background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); max-width: 500px; margin: auto; }
+    input[type=file] { margin-top: 10px; }
+    button { margin-top: 10px; background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; }
     #output { margin-top: 15px; word-wrap: break-word; }
     #preview img { margin-top: 10px; max-width: 100%; border-radius: 10px; border: 1px solid #ddd; }
-    #copyBtn { margin-top: 8px; background: #28a745; }
-    #copyBtn:hover { background: #218838; }
-    a { color: #007bff; text-decoration: none; }
   </style>
 </head>
 <body>
   <div class="card">
-    <h1>Upload Bukti Pembayaran</h1>
-    <p>Pilih gambar bukti pembayaran untuk diunggah ke repo GitHub.</p>
-
-    <input type="file" id="fileInput" accept="image/*"><br>
-    <button id="uploadBtn">Upload ke GitHub</button>
-
+    <h1>Upload Gambar ke GitHub</h1>
+    <input type="file" id="fileInput" accept="image/*">
+    <button id="uploadBtn">Upload</button>
     <div id="output"></div>
     <div id="preview"></div>
   </div>
