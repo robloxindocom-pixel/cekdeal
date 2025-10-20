@@ -1,72 +1,87 @@
-const GITHUB_TOKEN = "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";
-const USERNAME = "robloxindocom";
-const REPO = "cekdeal";
-const BRANCH = "main";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Upload Image ke GitHub</title>
+  <style>
+    body { font-family: Arial; max-width: 600px; margin: 50px auto; text-align: center; }
+    input[type="file"] { margin: 20px 0; }
+    img { max-width: 100%; margin-top: 15px; border-radius: 8px; }
+    button { padding: 8px 15px; cursor: pointer; margin-top: 10px; }
+    #linkContainer { margin-top: 20px; }
+    #linkContainer a { display: block; margin-top: 5px; }
+  </style>
+</head>
+<body>
+  <h2>Upload Gambar ke GitHub Repo</h2>
+  <input type="text" id="username" placeholder="Masukkan username" /><br>
+  <input type="file" id="fileInput" accept="image/*" />
+  <button onclick="uploadImage()">Upload</button>
 
-document.getElementById('uploadBtn').addEventListener('click', async () => {
-  const fileInput = document.getElementById('fileInput');
-  const output = document.getElementById('output');
-  const preview = document.getElementById('preview');
+  <div id="linkContainer"></div>
 
-  if (!fileInput.files.length) {
-    return alert("Pilih gambar terlebih dahulu!");
-  }
+  <script>
+    const GITHUB_TOKEN = "YOUR_GITHUB_TOKEN"; // ⚠️ Ganti token kamu
+    const USERNAME = "robloxindocom";         // ⚠️ Ganti username GitHub kamu
+    const REPO = "cekdeal";                   // ⚠️ Ganti nama repo kamu
+    const BRANCH = "main";                    // atau 'master' tergantung repo kamu
+    const PATH = "images";                    // folder di repo
 
-  const file = fileInput.files[0];
-  const reader = new FileReader();
+    async function uploadImage() {
+      const fileInput = document.getElementById("fileInput");
+      const username = document.getElementById("username").value.trim();
+      if (!fileInput.files.length) return alert("Pilih file dulu!");
+      if (!username) return alert("Masukkan username!");
 
-  reader.onloadend = async () => {
-    const base64data = reader.result.split(',')[1];
-    const filePath = `images/${Date.now()}_${file.name}`;
+      const file = fileInput.files[0];
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
 
-    output.innerHTML = "⏳ Mengunggah ke GitHub...";
-    preview.innerHTML = "";
-    document.getElementById('uploadBtn').disabled = true;
+      reader.onload = async () => {
+        const base64 = reader.result.split(",")[1];
+        const timestamp = Date.now();
+        const safeName = username.replace(/\W+/g, "_");
+        const filename = `${safeName}_${timestamp}_${file.name}`;
 
-    try {
-      const response = await fetch(`https://api.github.com/repos/${USERNAME}/${REPO}/contents/${filePath}`, {
-        method: 'PUT',
-        headers: {
-          'Authorization': `token ${GITHUB_TOKEN}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          message: `Upload ${file.name}`,
-          content: base64data,
-          branch: BRANCH,
-        })
-      });
-
-      const result = await response.json();
-
-      if (response.ok) {
-        const rawUrl = `https://raw.githubusercontent.com/${USERNAME}/${REPO}/${BRANCH}/${filePath}`;
-
-        output.innerHTML = `
-          ✅ <b>Upload berhasil!</b><br>
-          📎 <b>Link Gambar:</b><br>
-          <a id="imageLink" href="${rawUrl}" target="_blank">${rawUrl}</a><br>
-          <button id="copyBtn">📋 Salin Link</button>
-        `;
-
-        preview.innerHTML = `<img src="${rawUrl}" alt="Preview Gambar">`;
-
-        document.getElementById('copyBtn').addEventListener('click', () => {
-          navigator.clipboard.writeText(rawUrl);
-          const btn = document.getElementById('copyBtn');
-          btn.textContent = "✅ Disalin!";
-          setTimeout(() => (btn.textContent = "📋 Salin Link"), 2000);
+        const url = `https://api.github.com/repos/${USERNAME}/${REPO}/contents/${PATH}/${filename}`;
+        const res = await fetch(url, {
+          method: "PUT",
+          headers: {
+            "Authorization": `token ${GITHUB_TOKEN}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            message: `Upload ${filename}`,
+            content: base64,
+            branch: BRANCH
+          }),
         });
 
-      } else {
-        output.innerHTML = `❌ Gagal upload: ${result.message || 'Unknown error'}`;
-      }
-    } catch (err) {
-      output.innerHTML = `⚠️ Terjadi kesalahan: ${err.message}`;
+        const data = await res.json();
+        if (res.status === 201 || res.status === 200) {
+          const link = `https://raw.githubusercontent.com/${USERNAME}/${REPO}/${BRANCH}/${PATH}/${filename}`;
+          showLink(link);
+        } else {
+          alert("Gagal upload: " + (data.message || "Unknown error"));
+          console.error(data);
+        }
+      };
     }
 
-    document.getElementById('uploadBtn').disabled = false;
-  };
+    function showLink(link) {
+      const container = document.getElementById("linkContainer");
+      container.innerHTML = `
+        <p>✅ Upload sukses!</p>
+        <a href="${link}" target="_blank">${link}</a>
+        <button onclick="copyLink('${link}')">Copy Link</button>
+        <img src="${link}" alt="Preview">
+      `;
+    }
 
-  reader.readAsDataURL(file);
-});
+    function copyLink(link) {
+      navigator.clipboard.writeText(link);
+      alert("Link disalin!");
+    }
+  </script>
+</body>
+</html>
